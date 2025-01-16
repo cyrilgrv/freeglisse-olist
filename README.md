@@ -1,18 +1,28 @@
 # Web scrapping and Power BI dashboarding project
 
 # Context
-Freeglisse.com positions itself as the leading second-hand ski resale website in France.
+[Freeglisse.com](https://freeglisse.com/fr/12-ski-occasion) positions itself as the leading second-hand ski resale website in France.
 It offers an extensive catalog of equipment, categorized by type of use, quality, brand, etc.
 Our objective is to analyze the products available for resale on the site to assess its positioning and product offerings. This initiative is being conducted in preparation for the acquisition of the site by a third-party company (Olist).
 
 # Mission
 To achieve this, we will first collect product information through web scraping with Python (using BeautifulSoup and Selectolax) and then analyze the gathered data using a Power BI dashboard.
 
-> Note: This project is an exercise as part of a data analysis training program, designed to teach web scraping techniques with Python and to master dashboard design using Power BI.
+> Note : This project is an exercise as part of a data analysis training program, designed to teach web scraping techniques with Python and to master dashboard design using Power BI.
 
-# Webscraping
-## Instructions to run main.py
-Clone this repository, create a virtual environment, and install dependencies:
+# Web scraping
+## Additional information
+Since the products on freeglisse.com are categorized into three quality levels (A, B, and C), we perform web scrapping from the base URLs stored in the config.py file :
+```python
+BASE_URLS = {
+    "A": "https://freeglisse.com/fr/12-ski-occasion/s-1/etat_du_materiel-qualite_a?page=",
+    "B": "https://freeglisse.com/fr/12-ski-occasion/s-1/etat_du_materiel-qualite_b?page=",
+    "C": "https://freeglisse.com/fr/12-ski-occasion/s-1/etat_du_materiel-qualite_c?page=",
+}
+```
+
+## Instructions to run the scrapping script :
+Clone this repository, create a virtual environment, and install dependencies :
 ```bash
 git clone https://github.com/cyrilgrv/freeglisse-olist/
 cd freeglisse-olist
@@ -24,6 +34,8 @@ python main.py
 ```
 
 # Dashboard :
+>Note : The data displayed in this demo dashboard was fetched on on October 12, 2024.
+
 [![Dashboard](https://img.shields.io/badge/Dashboard%20Power%20BI-View%20Online-yellow?logo=power-bi&logoColor=white)](https://app.powerbi.com/view?r=eyJrIjoiODcxMDQzZWUtMmQ3Yy00OTI2LWJlZGMtNTljNGQ5ZjczZDUwIiwidCI6IjJkNjhkYjFhLTNmY2QtNDZjMi1iNDNiLTlhYjE4NjU1NzY1NyIsImMiOjEwfQ%3D%3D)
 
 [![screenshot](dashboard_screenshot.png)](https://app.powerbi.com/view?r=eyJrIjoiODcxMDQzZWUtMmQ3Yy00OTI2LWJlZGMtNTljNGQ5ZjczZDUwIiwidCI6IjJkNjhkYjFhLTNmY2QtNDZjMi1iNDNiLTlhYjE4NjU1NzY1NyIsImMiOjEwfQ%3D%3D)
