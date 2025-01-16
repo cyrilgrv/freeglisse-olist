@@ -46,7 +46,7 @@ def get_all_urls(page):
     # Second part of the function --> parsing product IDs and URLs:
     print("Starting URL and product ID search.")
 
-    for url in tqdm(url_list, desc='Parsing collected URLs'):
+    for url in url_list:
         resp = httpx.get(url)
         html = HTMLParser(resp.text)
 
@@ -60,9 +60,9 @@ def get_all_urls(page):
     return url_products_list
 
 # We run the 'get_all_urls' function for each product quality category (A, B and C):
-url_products_list_A = get_all_urls(config.BASE_URLS["A"])
-url_products_list_B = get_all_urls(config.BASE_URLS["B"])
-url_products_list_C = get_all_urls(config.BASE_URLS["C"])
+url_products_list_A = get_all_urls(tqdm(config.BASE_URLS["A"], desc="Collecting URLs for Quality A"))
+url_products_list_B = get_all_urls(tqdm(config.BASE_URLS["B"], desc="Collecting URLs for Quality B"))
+url_products_list_C = get_all_urls(tqdm(config.BASE_URLS["C"], desc="Collecting URLs for Quality C"))
 
 # Function to collect details of each product from the URL list of all pages on the site.
 def get_details(url):
@@ -83,7 +83,7 @@ def get_details(url):
     product_features_data_list = []
     brands = []
 
-    for i in tqdm(url, desc='Collecting product details'):
+    for i in url:
         product_raw = requests.get(i, headers=config.HEADERS)
         details_soup = BeautifulSoup(product_raw.content)
 
@@ -148,8 +148,8 @@ qualities = ["Qualité A", "Qualité B", "Qualité C"]
 urls = [url_products_list_A, url_products_list_B, url_products_list_C]
 dfs = []
 for quality, url_list in zip(qualities, urls):
-    df = get_details(url_list)
+    df = get_details(tqdm(url_list, desc=f"Collecting products details for {quality}"))
     df["Qualité"] = quality
     dfs.append(df)
 df_final = pd.concat(dfs, axis=0)
-df_final.to_csv("freeglisse_final.csv", index=False)
+df_final.to_csv("freeglisse_export.csv", index=False)
