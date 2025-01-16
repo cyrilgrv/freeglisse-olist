@@ -12,7 +12,7 @@ To achieve this, we will first collect product information through web scraping 
 
 # Web scraping
 ## Additional information
-Since the products on freeglisse.com are categorized into three quality levels (A, B, and C), we perform web scrapping from the base URLs stored in the config.py file :
+Since the products on freeglisse.com are categorized into three quality levels (A, B, and C), we perform web scrapping from the base URLs stored in the [config.py](config.py) file :
 ```python
 BASE_URLS = {
     "A": "https://freeglisse.com/fr/12-ski-occasion/s-1/etat_du_materiel-qualite_a?page=",
