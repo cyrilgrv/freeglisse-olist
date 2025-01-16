@@ -82,7 +82,7 @@ def get_details(url_list):
     # Utilisation de tqdm pour le traitement des URLs
     for i in tqdm(url_list, desc="Fetching product details", ncols=100):
         product_raw = requests.get(i, headers=config.HEADERS)
-        details_soup = BeautifulSoup(product_raw.content)
+        details_soup = BeautifulSoup(product_raw.content, features="html.parser")
 
         # Collect product data
         try:
