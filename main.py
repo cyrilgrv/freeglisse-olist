@@ -61,8 +61,11 @@ def get_all_urls(page):
     return url_products_list
 
 # We run the 'get_all_urls' function for each product quality category (A, B and C):
+print("Starting URLs search for quality A")
 url_products_list_A = get_all_urls(config.BASE_URLS["A"])
+print("Starting URLs search for quality B")
 url_products_list_B = get_all_urls(config.BASE_URLS["B"])
+print("Starting URLs search for quality C")
 url_products_list_C = get_all_urls(config.BASE_URLS["C"])
 
 # Function to collect details of each product from the URL list of all pages on the site.
@@ -141,11 +144,11 @@ def get_details(url_list):
 qualities = ["Qualité A", "Qualité B", "Qualité C"]
 urls = [url_products_list_A, url_products_list_B, url_products_list_C]
 dfs = []
-for quality, url_list in zip(qualities, tqdm(urls, desc="Processing each quality category", ncols=100)):
+for quality, url_list in zip(qualities, tqdm(urls, desc="Processing details for each quality category (A,B,C)", ncols=100)):
     df = get_details(url_list)
     df["Qualité"] = quality
     dfs.append(df)
 
 df_final = pd.concat(dfs, axis=0)
 df_final.to_csv("freeglisse_export.csv", index=False)
-print("Export completed!")
+print("Data exported to freeglisse_export.csv")
