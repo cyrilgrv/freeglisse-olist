@@ -60,9 +60,9 @@ def get_all_urls(page):
     return url_products_list
 
 # We run the 'get_all_urls' function for each product quality category (A, B and C):
-url_products_list_A = get_all_urls(tqdm(config.BASE_URLS["A"], desc="Collecting URLs for Quality A"))
-url_products_list_B = get_all_urls(tqdm(config.BASE_URLS["B"], desc="Collecting URLs for Quality B"))
-url_products_list_C = get_all_urls(tqdm(config.BASE_URLS["C"], desc="Collecting URLs for Quality C"))
+url_products_list_A = get_all_urls(config.BASE_URLS["A"])
+url_products_list_B = get_all_urls(config.BASE_URLS["B"])
+url_products_list_C = get_all_urls(config.BASE_URLS["C"])
 
 # Function to collect details of each product from the URL list of all pages on the site.
 def get_details(url):
