@@ -34,7 +34,7 @@ python main.py
 ```
 
 # Dashboard :
->Note : The data displayed in this demo dashboard was fetched on on October 12, 2024.
+>Note : The data displayed in this demo dashboard was fetched on October 12, 2024.
 
 [![Dashboard](https://img.shields.io/badge/Dashboard%20Power%20BI-View%20Online-yellow?logo=power-bi&logoColor=white)](https://app.powerbi.com/view?r=eyJrIjoiODcxMDQzZWUtMmQ3Yy00OTI2LWJlZGMtNTljNGQ5ZjczZDUwIiwidCI6IjJkNjhkYjFhLTNmY2QtNDZjMi1iNDNiLTlhYjE4NjU1NzY1NyIsImMiOjEwfQ%3D%3D)
 
