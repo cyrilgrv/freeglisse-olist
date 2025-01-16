@@ -23,11 +23,11 @@ def get_all_urls(page):
     not_last_page = True
     url_list = []
     url_products_list = []
-    id_products_list = []
 
-    # First part of the function --> collect all URLs from the site until a page contains "No product available at the moment":
+    # First part of the function --> collect all URLs from the site
     print("Searching for all existing URLs")
-    
+
+    # Utilisation de tqdm pour le processus de pages (afficher une barre de progression pour chaque page)
     while not_last_page:
         url = f"{page}{page_number}"
         response = requests.get(url, headers=config.HEADERS)
@@ -38,15 +38,16 @@ def get_all_urls(page):
         
         else:
             url_list.append(url)
-            print(f"Searched page: {page_number}, Status: {response.status_code}")
             page_number += 1
+            print(f"Searched page: {page_number - 1}, Status: {response.status_code}")
 
     print(f'Last page reached: {page_number-1}')
 
     # Second part of the function --> parsing product IDs and URLs:
     print("Starting URL and product ID search.")
 
-    for url in url_list:
+    # Utilisation de tqdm pour le parsing des URL récupérées
+    for url in tqdm(url_list, desc="Parsing product pages", ncols=100):
         resp = httpx.get(url)
         html = HTMLParser(resp.text)
 
@@ -65,15 +66,10 @@ url_products_list_B = get_all_urls(config.BASE_URLS["B"])
 url_products_list_C = get_all_urls(config.BASE_URLS["C"])
 
 # Function to collect details of each product from the URL list of all pages on the site.
-def get_details(url):
+def get_details(url_list):
     '''
     ### Function `get_details` freeglisse.com:
-    - Collects details of information for each product:
-        - Product ID
-        - Title
-        - Price
-        - Brand
-        - Product characteristics: Type, User, Level, Color, CO2 savings achieved, Product type.
+    - Collects details of information for each product.
     #### Returns a dataframe.
     '''
 
@@ -83,18 +79,18 @@ def get_details(url):
     product_features_data_list = []
     brands = []
 
-    for i in url:
+    # Utilisation de tqdm pour le traitement des URLs
+    for i in tqdm(url_list, desc="Fetching product details", ncols=100):
         product_raw = requests.get(i, headers=config.HEADERS)
         details_soup = BeautifulSoup(product_raw.content)
 
-        # Price
+        # Collect product data
         try:
             price = details_soup.select_one('.current-price-value').text.strip()
         except AttributeError:
             price = None
         prices.append(price)
 
-        # ID
         try:
             id_div = details_soup.find('div', class_='product-reference rb-tag-cate')
             id = id_div.find('span').text.strip()
@@ -102,12 +98,10 @@ def get_details(url):
             id = None
         ids.append(id)
 
-        # Title
         title = details_soup.find('h1').text.strip()
         titres.append(title)
 
-        # Product characteristics: Type, User, Level, Color, CO2 savings, Product type.
-        # Store all data in a dictionary (<dt> = title, <dd> = value):
+        # Collect product features
         product_features_data = {}
         product_features = details_soup.find("dl", class_="data-sheet")
         for feature in product_features.find_all(["dt", "dd"]):
@@ -120,26 +114,26 @@ def get_details(url):
                 product_features_data[title].append(value)
         product_features_data_list.append(product_features_data)
 
-        # Brand: if brand is not found, set to 'None' and continue
+        # Collect brand data
         try:
             brand = details_soup.find('img', {'class': 'img img-thumbnail manufacturer-logo'}).get('alt')
         except AttributeError:
             brand = None
         brands.append(brand)
 
-        # Add data to a dataframe
-        df_product = pd.DataFrame({
-            "Product ID": ids,
-            "Title": titres,
-            "Price": prices,
-            "Brand": brands
-        })
-        
-        # Create a DataFrame with product features data
-        df_product_features_data = pd.DataFrame(product_features_data_list)
+    # Create DataFrame
+    df_product = pd.DataFrame({
+        "Product ID": ids,
+        "Title": titres,
+        "Price": prices,
+        "Brand": brands
+    })
+    
+    # Create a DataFrame with product features data
+    df_product_features_data = pd.DataFrame(product_features_data_list)
 
-        # Concatenate both dataframes ('df_product' and 'df_product_features_data')
-        df = pd.concat([df_product, df_product_features_data], axis=1)
+    # Concatenate both dataframes ('df_product' and 'df_product_features_data')
+    df = pd.concat([df_product, df_product_features_data], axis=1)
 
     return df
 
@@ -147,9 +141,11 @@ def get_details(url):
 qualities = ["Qualité A", "Qualité B", "Qualité C"]
 urls = [url_products_list_A, url_products_list_B, url_products_list_C]
 dfs = []
-for quality, url_list in zip(qualities, urls):
-    df = get_details(tqdm(url_list, desc=f"Collecting products details for {quality}"))
+for quality, url_list in zip(qualities, tqdm(urls, desc="Processing each quality category", ncols=100)):
+    df = get_details(url_list)
     df["Qualité"] = quality
     dfs.append(df)
+
 df_final = pd.concat(dfs, axis=0)
 df_final.to_csv("freeglisse_export.csv", index=False)
+print("Export completed!")
