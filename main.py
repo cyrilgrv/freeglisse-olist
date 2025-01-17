@@ -27,7 +27,6 @@ def get_all_urls(page):
     # First part of the function --> collect all URLs from the site
     print("Searching for all existing URLs")
 
-    # Utilisation de tqdm pour le processus de pages (afficher une barre de progression pour chaque page)
     while not_last_page:
         url = f"{page}{page_number}"
         response = requests.get(url, headers=config.HEADERS)
@@ -46,7 +45,6 @@ def get_all_urls(page):
     # Second part of the function --> parsing product IDs and URLs:
     print("Starting URL and product ID search.")
 
-    # Utilisation de tqdm pour le parsing des URL récupérées
     for url in tqdm(url_list, desc="Parsing product pages", ncols=100):
         resp = httpx.get(url)
         html = HTMLParser(resp.text)
@@ -82,7 +80,6 @@ def get_details(url_list):
     product_features_data_list = []
     brands = []
 
-    # Utilisation de tqdm pour le traitement des URLs
     for i in tqdm(url_list, desc="Fetching product details", ncols=100):
         product_raw = requests.get(i, headers=config.HEADERS)
         details_soup = BeautifulSoup(product_raw.content, features="html.parser")
